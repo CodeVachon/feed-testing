@@ -17,16 +17,19 @@ export const Feed: FC = () => {
             method: "GET",
             url: "/api/feed",
             params: {
-                last_id: lastId
+                last_id: lastId // Past the LastId if found
             }
         })
             .then((response) => {
                 if (response.data.length > 0) {
                     setItems((data) => {
-                        return [...response.data, ...data].splice(0, 25);
+                        return [...response.data, ...data].splice(0, 25); // Splice Caps the Length of the Array
                     });
                     setLastId(response.data[0].id);
                 }
+            })
+            .catch((error) => {
+                console.error(error);
             })
             .finally(() => {
                 setIsLoading(false);
@@ -36,6 +39,7 @@ export const Feed: FC = () => {
     useEffect(() => {
         getFeedItems(lastId);
 
+        // continuously request new data.
         const refresh = setInterval(() => {
             getFeedItems(lastId);
         }, 1500);
